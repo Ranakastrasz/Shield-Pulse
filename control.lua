@@ -33,7 +33,7 @@ function onload()  -- this function
 end
 
 script.on_init(onload)
-script.on_load(onload)
+script.on_configuration_changed(onload)
 
 
 function globalPrint(msg)
@@ -82,11 +82,6 @@ function tick()
         thisPlayer = players[i]
         if (thisPlayer.connected) then
             if (thisPlayer.character) then
-                --game.getplayer(1).print(i..' '..player)
-                
-                --if not global.modularArmor[i] then
-                --    global.modularArmor[i] = {}
-                --end
                 local modularArmor = global.modularArmor[i]
                 
                 if (not modularArmor) then
@@ -109,25 +104,26 @@ function tick()
                           
                 if (armor.valid_for_read) then
 					local grid = armor.grid
-                    if (grid ~= nil) then -- Check for grid existence.
+                    if (grid.valid) then -- Check for grid existence.
                       
           
                         --local shieldHealth = 0 -- Total shield and shield capacity
                         --local shieldCap = 0
-                        --[[for i,equipment in ipairs(grid.equipment) do -- Loop through all equipment.
+                        --for i,equipment in ipairs(grid.equipment) do -- Loop through all equipment.
                             
-                            if equipment.max_shield ~= 0 then
-                                shieldHealth = shieldHealth + equipment.shield -- get shield data for global shield values
-                                shieldCap = shieldCap + equipment.max_shield
-                            else
-                            end
+                        --    if equipment.max_shield ~= 0 then
+                        --        shieldHealth = shieldHealth + equipment.shield -- get shield data for global shield values
+                        --        shieldCap = shieldCap + equipment.max_shield
+                        --    else
+                        --    end
                             
-                        end]]--
+                        --end
                         
-                        local shieldFraction = grid.shield/grid.max_shield
+                        --local shieldFraction = --shieldHealth/shieldCap--1.0--grid.shield/grid.max_shield
                         
 
-                        if shieldCap > 0 then
+                        if grid.max_shield > 0 then
+							shieldFraction = grid.shield/grid.max_shield
                             -- Always slide one tile per tick. Unless taking sudden damage, where you start at 14, occulate within range.
                             -- Charging. Always show 1-4. When finished, go up through to 20 then stop.
                             -- Taking Damage. 5-95% decending, occulate between 5 and 14. After 2 seconds (120 from last damage) go up to 20.
@@ -135,7 +131,7 @@ function tick()
                             
                             
                             local currentSFX = 0
-                            if shieldHealth < modularArmor.shieldSFX.previousShield then
+                            if grid.shield < modularArmor.shieldSFX.previousShield then
                                 -- Took damage last tick.
                                 modularArmor.shieldSFX.lastDamage = 0
                             else
@@ -161,7 +157,7 @@ function tick()
                                 
                             else
                                 -- Damage no longer being taken.
-                                if shieldHealth < shieldCap then
+                                if grid.shield < grid.max_shield then
                                     -- Show 1-4 regen
                                     -- Clamp between 1 and 4, and reverse.
                                     -- Instead of 4, use 4 + 1 per 10%. Caps at 14 when it finishes.
@@ -193,7 +189,7 @@ function tick()
                                 
                             end
                             
-                            modularArmor.shieldSFX.previousShield = shieldHealth
+                            modularArmor.shieldSFX.previousShield = grid.shield
                             modularArmor.shieldSFX.lastDamage = modularArmor.shieldSFX.lastDamage+1
                             --modularArmor.shieldSFX.direction = 0
                             modularArmor.shieldSFX.lastSFX = currentSFX
