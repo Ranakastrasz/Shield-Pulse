@@ -102,11 +102,17 @@ function tick()
                 
                 local armor = thisPlayer.get_inventory(defines.inventory.player_armor)[1] -- Check for armour presence.
                           
-                if (armor.valid_for_read) then
+                if (armor ~= nil and armor.valid_for_read) then
 					local grid = armor.grid
-                    if (grid.valid) then -- Check for grid existence.
+                    if (grid ~= nil and grid.valid) then -- Check for grid existence.
+                      
+--[[
+                if (grid ~= nil) and (armor.valid_for_read) then
+					local grid = armor.grid
+                    if (grid ~= nil) and (grid.valid) then -- Check for grid existence.
                       
           
+]]--
                         --local shieldHealth = 0 -- Total shield and shield capacity
                         --local shieldCap = 0
                         --for i,equipment in ipairs(grid.equipment) do -- Loop through all equipment.
