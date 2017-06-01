@@ -12,28 +12,22 @@ function verifySettings()
 	end
 end
 
-function onload()  -- this function 
+function on_init()
        -- globalPrint("onLoad")
-	if (global.loaded == nil) then
-		global.loaded = true
-       -- globalPrint("loaded")
         
-		verifySettings()
-	end
+    verifySettings()
+    
     if (not global.surface) then
         global.surface = game.surfaces['nauvis']
     end
     if (not global.modularArmor) then
         global.modularArmor = {}
     end
-    if (global.ticking == nil) then
-        global.ticking = 0
-    end
-    script.on_event(defines.events.on_tick, ticker)
 end
 
-script.on_init(onload)
-script.on_configuration_changed(onload)
+script.on_init(on_init)
+
+script.on_event(defines.events.on_tick, ticker)
 
 
 function globalPrint(msg)
@@ -72,11 +66,9 @@ function sfxShield(id,targetz)--positionz)
 end
 
 function tick()
-	local shouldKeepTicking
     local thisPlayer = nil
     local players = game.players
         --globalPrint("tick")
-    shouldKeepTicking = true -- Due to lack of any alternate method of detecting player's armor state, we have to always tick.
     
     for i=1, #players do
         thisPlayer = players[i]
@@ -213,8 +205,4 @@ function tick()
             
     end
     
-	if (not shouldKeepTicking) then
-		global.ticking = nil
-		script.onevent(defines.events.ontick, nil)
-	end
 end
